@@ -8,13 +8,18 @@ import com.empresa.taskmanager.model.Role;
 import com.empresa.taskmanager.model.User;
 import com.empresa.taskmanager.repository.UserRepository;
 import com.empresa.taskmanager.security.JwtService;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.empresa.taskmanager.dto.auth.LoginRequest;
 import com.empresa.taskmanager.dto.auth.LoginResponse;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -38,7 +43,10 @@ public class UserService {
 
     public UserResponse register(UserRequest request) {
 
+        log.info("Intento de registro del usuario: {}", request.getEmail());
+
         if(repository.findByEmail(request.getEmail()).isPresent()){
+            log.warn("El correo {} ya está registrado", request.getEmail());
             throw new EmailAlreadyExistsException(request.getEmail());
         }
 
@@ -50,6 +58,7 @@ public class UserService {
                 .build();
 
         User savedUser = repository.save(user);
+        log.info("Usuario registrado correctamente: {}", savedUser.getEmail());
 
         return UserResponse.builder()
                 .id(savedUser.getId())
@@ -69,6 +78,8 @@ public class UserService {
                 )
         );
 
+        log.info("Intento de inicio de sesión para {}", request.getEmail());
+
         User user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
 
@@ -81,6 +92,8 @@ public class UserService {
                         .build()
         );
 
+        log.info("Inicio de sesión exitoso para {}", request.getEmail());
+
         return LoginResponse.builder()
                 .token(token)
                 .build();
@@ -88,6 +101,7 @@ public class UserService {
 
     public User getUserByEmail(String email){
 
+        log.debug("Buscando usuario por email: {}", email);
         return repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
     }

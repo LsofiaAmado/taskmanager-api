@@ -17,8 +17,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
+@Slf4j
 @Service
 public class TaskService {
 
@@ -38,6 +41,7 @@ public class TaskService {
     public TaskResponse createTask(TaskRequest request) {
 
         User user = currentUserService.getCurrentUser();
+        log.info("Creando una nueva tarea para el usuario: {}", user.getEmail());
 
         Task task = Task.builder()
                 .titulo(request.getTitulo())
@@ -49,6 +53,8 @@ public class TaskService {
                 .build();
         Task savedTask = repository.save(task);
 
+        log.info("Tarea creada correctamente con ID {}", savedTask.getId());
+
         return mapToResponse(savedTask);
     }
 
@@ -56,6 +62,7 @@ public class TaskService {
     public List<TaskResponse> getAllTasks() {
 
         User user = currentUserService.getCurrentUser();
+        log.info("Consultando todas las tareas del usuario: {}", user.getEmail());
 
         return repository.findByUser(user)
                 .stream()
@@ -68,6 +75,7 @@ public class TaskService {
     public Page<TaskResponse> getTasks(int page, int size, String sortBy, String direction) {
 
         User user = currentUserService.getCurrentUser();
+
         Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Page<Task> tasks =  repository.findByUser(user, PageRequest.of(page, size, sort));
         return tasks.map(this::mapToResponse);
@@ -77,6 +85,7 @@ public class TaskService {
     // Obtener tarea por id
     public TaskResponse getTaskById(Long id) {
 
+        log.info("Consultando tarea con ID {}", id);
         Task task = getTaskByIdAndUser(id);
         return mapToResponse(task);
 
@@ -86,6 +95,7 @@ public class TaskService {
     public TaskResponse updateTask(Long id, TaskRequest request) {
 
         Task task = getTaskByIdAndUser(id);
+        log.info("Actualizando tarea con ID {}", id);
 
         task.setTitulo(request.getTitulo());
         task.setDescripcion(request.getDescripcion());
@@ -94,6 +104,8 @@ public class TaskService {
 
         Task updatedTask = repository.save(task);
 
+        log.info("Tarea {} actualizada correctamente", id);
+
         return mapToResponse(updatedTask);
     }
 
@@ -101,6 +113,7 @@ public class TaskService {
     public void deleteTask(Long id) {
 
         Task task = getTaskByIdAndUser(id);
+        log.warn("Eliminando tarea con ID {}", id);
         repository.delete(task);
 
     }
@@ -149,6 +162,8 @@ public class TaskService {
 
         Task task = getTaskByIdAndUser(id);
         task.setStatus(request.getStatus());
+        log.info("Actualizando estado de la tarea {} a {}", id, request.getStatus());
+
         Task updatedTask = repository.save(task);
 
         return mapToResponse(updatedTask);
@@ -158,6 +173,8 @@ public class TaskService {
     public List<TaskResponse> searchTasks(String keyword){
 
         User user = currentUserService.getCurrentUser();
+        log.info("Buscando tareas con palabra clave: {}", keyword);
+
         return repository.searchTasks(user, keyword)
                 .stream()
                 .map(this::mapToResponse)
