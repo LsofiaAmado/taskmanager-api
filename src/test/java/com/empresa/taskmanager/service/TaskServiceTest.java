@@ -22,6 +22,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 @ExtendWith(MockitoExtension.class)
 public class TaskServiceTest {
 
@@ -277,6 +281,132 @@ public class TaskServiceTest {
         assertEquals(1, result.size());
         assertEquals("Spring Security", result.get(0).getTitulo());
 
+    }
+
+    @Test
+    void getTasksByStatus_success() {
+
+        User user = User.builder()
+                .id(1L)
+                .email("laura@gmail.com")
+                .build();
+
+        Task task = Task.builder()
+                .id(1L)
+                .titulo("Spring")
+                .status(TaskStatus.PENDING)
+                .priority(Priority.HIGH)
+                .user(user)
+                .build();
+
+        when(currentUserService.getCurrentUser()).thenReturn(user);
+        when(repository.findByUserAndStatus(user, TaskStatus.PENDING))
+                .thenReturn(List.of(task));
+
+        List<TaskResponse> result = taskService.getTasksByStatus(TaskStatus.PENDING);
+
+        assertEquals(1, result.size());
+        assertEquals(TaskStatus.PENDING, result.get(0).getStatus());
+
+        verify(repository).findByUserAndStatus(user, TaskStatus.PENDING);
+    }
+
+    @Test
+    void getTasksByPriority_success() {
+
+        User user = User.builder()
+                .id(1L)
+                .email("laura@gmail.com")
+                .build();
+
+        Task task = Task.builder()
+                .id(1L)
+                .titulo("Spring")
+                .priority(Priority.HIGH)
+                .status(TaskStatus.PENDING)
+                .user(user)
+                .build();
+
+        when(currentUserService.getCurrentUser()).thenReturn(user);
+        when(repository.findByUserAndPriority(user, Priority.HIGH))
+                .thenReturn(List.of(task));
+
+        List<TaskResponse> result = taskService.getTasksByPriority(Priority.HIGH);
+
+        assertEquals(1, result.size());
+        assertEquals(Priority.HIGH, result.get(0).getPriority());
+
+        verify(repository).findByUserAndPriority(user, Priority.HIGH);
+    }
+
+    @Test
+    void filterTasks_success() {
+
+        User user = User.builder()
+                .id(1L)
+                .email("laura@gmail.com")
+                .build();
+
+        Task task = Task.builder()
+                .id(1L)
+                .titulo("Spring")
+                .status(TaskStatus.PENDING)
+                .priority(Priority.HIGH)
+                .user(user)
+                .build();
+
+        when(currentUserService.getCurrentUser()).thenReturn(user);
+
+        when(repository.findByUserAndStatusAndPriority(
+                user,
+                TaskStatus.PENDING,
+                Priority.HIGH))
+                .thenReturn(List.of(task));
+
+        List<TaskResponse> result =
+                taskService.filterTasks(TaskStatus.PENDING, Priority.HIGH);
+
+        assertEquals(1, result.size());
+
+        verify(repository)
+                .findByUserAndStatusAndPriority(
+                        user,
+                        TaskStatus.PENDING,
+                        Priority.HIGH);
+    }
+
+    @Test
+    void getTasks_success() {
+
+        User user = User.builder()
+                .id(1L)
+                .email("laura@gmail.com")
+                .build();
+
+        Task task = Task.builder()
+                .id(1L)
+                .titulo("Spring")
+                .status(TaskStatus.PENDING)
+                .priority(Priority.HIGH)
+                .user(user)
+                .build();
+
+        Page<Task> page = new PageImpl<>(List.of(task));
+
+        when(currentUserService.getCurrentUser()).thenReturn(user);
+
+        when(repository.findByUser(
+                eq(user),
+                any(Pageable.class)))
+                .thenReturn(page);
+
+        Page<TaskResponse> result =
+                taskService.getTasks(0, 10, "titulo", "asc");
+
+        assertEquals(1, result.getContent().size());
+
+        verify(repository)
+                .findByUser(eq(user), any(Pageable.class));
     }
 
 }
