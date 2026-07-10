@@ -1,82 +1,83 @@
-# 📋 Task Manager API
+# 🚀 Task Manager API
 
-A RESTful API developed with Spring Boot for managing personal tasks securely using JWT authentication.
+REST API desarrollada con **Spring Boot** para la gestión de tareas con autenticación JWT, control de acceso mediante Spring Security, persistencia en PostgreSQL y despliegue en la nube con Render.
 
-The application allows users to register, log in, create tasks, update them, delete them, search, filter, paginate, and manage their own information securely.
+Este proyecto fue desarrollado como parte de mi portafolio Backend Java para demostrar conocimientos en el desarrollo de APIs seguras, pruebas automatizadas, Docker y buenas prácticas de desarrollo.
 
 ---
 
-## 🚀 Technologies
+## ✨ Características
+
+- 🔐 Registro e inicio de sesión con JWT.
+- 👤 Autenticación y autorización con Spring Security.
+- ✅ CRUD completo de tareas.
+- 📄 Paginación y ordenamiento.
+- 🔍 Búsqueda de tareas por palabra clave.
+- 🎯 Filtros por estado y prioridad.
+- 📝 Validación de datos.
+- ⚠️  Manejo centralizado de excepciones.
+- 📚 Documentación automática con Swagger/OpenAPI.
+- 🐳 Contenedorización con Docker y Docker Compose.
+- ☁️ Despliegue en Render.
+- 🧪 Pruebas unitarias e integración.
+- 📈 Cobertura de pruebas con JaCoCo.
+- 🔄 Integración continua con GitHub Actions.
+- 📋 Logging de operaciones importantes.
+
+---
+
+# 🛠 Tecnologías
 
 - Java 21
 - Spring Boot
 - Spring Security
-- JWT Authentication
+- JWT
 - Spring Data JPA
 - PostgreSQL
+- Maven
 - Docker
 - Docker Compose
-- Maven
-- Lombok
 - Swagger / OpenAPI
 - JUnit 5
 - Mockito
+- JaCoCo
+- GitHub Actions
+- Render
 
 ---
 
-## ✨ Features
+# 📂 Estructura del proyecto
 
-- User registration
-- User authentication (JWT)
-- CRUD operations for tasks
-- Search tasks
-- Filter by status
-- Filter by priority
-- Pagination
-- Sorting
-- Input validation
-- Exception handling
-- Unit Tests
-- Integration Tests
-- Docker support
-- Swagger documentation
-
----
-
-## 🏗️ Project Structure
-
+```
 src
+├── config
 ├── controller
 ├── dto
-├── entity
 ├── exception
+├── model
 ├── repository
 ├── security
 ├── service
+└── util
+```
 
 ---
 
-## ⚙️ Running the project locally
+# ▶️ Ejecución local
 
-Clone the repository
-
-```bash
-git clone <repository-url>
-```
-
-Move into the project
+### Clonar el repositorio
 
 ```bash
-cd taskmanagerapi
+git clone https://github.com/LsofiaAmado/taskmanager-api.git
 ```
 
-Compile
+### Entrar al proyecto
 
 ```bash
-mvn clean package
+cd taskmanager-api
 ```
 
-Run
+### Ejecutar con Maven
 
 ```bash
 mvn spring-boot:run
@@ -84,64 +85,94 @@ mvn spring-boot:run
 
 ---
 
-## 🐳 Running with Docker
+# 🐳 Ejecutar con Docker
 
-Build and start
+Construir la imagen:
+
+```bash
+mvn clean package
+```
 
 ```bash
 docker compose up --build
 ```
 
-Stop containers
+---
 
-```bash
-docker compose down
-```
+# 📖 Documentación de la API
+
+Swagger UI:
+
+**https://taskmanager-api-z4mf.onrender.com/swagger-ui/index.html**
+
+API Docs:
+
+**https://taskmanager-api-z4mf.onrender.com/v3/api-docs**
 
 ---
 
-## 📖 API Documentation
+# ☁️ Aplicación desplegada
 
-Swagger UI
+Render:
 
-```
-http://localhost:8080/swagger-ui/index.html
-```
+**https://taskmanager-api-z4mf.onrender.com**
 
 ---
 
-## 🧪 Running Tests
+# 🧪 Pruebas
 
-```bash
-mvn test
-```
+El proyecto incluye:
 
----
+- Pruebas unitarias con JUnit 5 y Mockito.
+- Pruebas de integración con MockMvc.
+- Cobertura de código con JaCoCo.
 
-## 🗄️ Database
-
-PostgreSQL
-
-Hibernate
-
-Spring Data JPA
+**Cobertura aproximada: 97%** ✅
 
 ---
 
-## 🔐 Authentication
+# 🔄 Integración Continua
 
-JWT (JSON Web Token)
+El proyecto utiliza **GitHub Actions** para:
 
-Protected endpoints require:
-
-```
-Authorization: Bearer <token>
-```
+- Compilar el proyecto.
+- Ejecutar las pruebas automáticamente.
+- Validar cada cambio enviado al repositorio principal.
 
 ---
 
-## 👩‍💻 Author
+# 📋 Funcionalidades principales
 
-Developed by **Sofy Ama**
+## Autenticación
 
-Backend Developer | Java | Spring Boot
+- POST /auth/register
+- POST /auth/login
+
+## Gestión de tareas
+
+- POST /tasks
+- GET /tasks
+- GET /tasks/{id}
+- PUT /tasks/{id}
+- DELETE /tasks/{id}
+
+## Funcionalidades adicionales
+
+- GET /tasks/page
+- GET /tasks/search
+- GET /tasks/filter
+- GET /tasks/status/{status}
+- GET /tasks/priority/{priority}
+- PATCH /tasks/{id}/status
+
+---
+
+# 👩‍💻 Autor
+
+**Laura Sofia Amado **
+
+GitHub:
+https://github.com/LsofiaAmado
+
+LinkedIn:
+https://www.linkedin.com/in/laura-sofia-amado-gonzalez-bb5b87222/

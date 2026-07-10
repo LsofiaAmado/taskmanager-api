@@ -41,7 +41,7 @@ public class TaskService {
     public TaskResponse createTask(TaskRequest request) {
 
         User user = currentUserService.getCurrentUser();
-        log.info("Creando una nueva tarea para el usuario: {}", user.getEmail());
+        log.info("Usuario {} está creando una nueva tarea ", user.getEmail());
 
         Task task = Task.builder()
                 .titulo(request.getTitulo())
@@ -52,8 +52,7 @@ public class TaskService {
                 .user(user)
                 .build();
         Task savedTask = repository.save(task);
-
-        log.info("Tarea creada correctamente con ID {}", savedTask.getId());
+        log.info("Tarea {} creada correctamente con ID {}", savedTask.getTitulo(), savedTask.getId());
 
         return mapToResponse(savedTask);
     }
@@ -103,7 +102,6 @@ public class TaskService {
         task.setFechaLimite(request.getFechaLimite());
 
         Task updatedTask = repository.save(task);
-
         log.info("Tarea {} actualizada correctamente", id);
 
         return mapToResponse(updatedTask);
@@ -173,7 +171,7 @@ public class TaskService {
     public List<TaskResponse> searchTasks(String keyword){
 
         User user = currentUserService.getCurrentUser();
-        log.info("Buscando tareas con palabra clave: {}", keyword);
+        log.info("Buscando tareas con la palabra clave: {}", keyword);
 
         return repository.searchTasks(user, keyword)
                 .stream()
